@@ -23,6 +23,10 @@ SDL_Texture * danlua = NULL ;
 SDL_Texture *pic[4] ;
 SDL_Texture *danxanh = NULL ;
 SDL_Texture* danphao = NULL ;
+Mix_Music * nhacnen = NULL;
+Mix_Chunk *tiengcao = NULL;
+Mix_Chunk* tiengphao = NULL ;
+Mix_Chunk* tienglua = NULL ;
 class sung ;
 class monster;
 map<pair<int, int>, int> m ;
@@ -266,6 +270,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[1].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
 
         }
@@ -283,6 +288,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[2].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
         }
         else
@@ -299,6 +305,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[3].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
 
         }
@@ -316,6 +323,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[4].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
 
         }
@@ -333,6 +341,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[5].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
         }
         else
@@ -349,6 +358,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[6].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
 
         }
@@ -366,6 +376,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[7].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
         }
         else
@@ -382,6 +393,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[8].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
 
         }
@@ -399,6 +411,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[9].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
         }
         else
@@ -415,6 +428,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[10].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
         }
         else
@@ -431,6 +445,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[11].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
         }
         else
@@ -447,6 +462,7 @@ void monster :: checksung()
             {
                 speed = 0 ;
                 row[12].sunggn()->matmau(dame) ;
+                Mix_PlayChannel( -1, tiengcao, 0 );
             }
         }
         else
@@ -774,6 +790,10 @@ void sunglua :: ban()
             row[gethang()].qvgn()->dinhdan(*dame) ;
             delete dame ;
         }
+        if(vitridan.x == vtdanbandau)
+        {
+            Mix_PlayChannel( -1, tienglua, 0 );
+        }
         SDL_RenderCopy(rd,danlua,NULL ,&vitridan ) ;
 
         if(i == 8  )
@@ -801,6 +821,10 @@ void sunggai :: ban()
             }
             row[gethang()].qvgn()->dinhdan(*dame) ;
             delete dame ;
+        }
+        if(vitridan.x == vtdanbandau)
+        {
+            Mix_PlayChannel( -1, tienglua, 0 );
         }
         SDL_RenderCopy(rd,danxanh,NULL ,&vitridan ) ;
 
@@ -830,7 +854,12 @@ void sungphao :: ban()
             delete dame ;
             row[gethang()].qvgn()->dinhdan(*dame) ;
         }
+        if(vitridan.x == vtdanbandau )
+        {
+            Mix_PlayChannel( -1, tiengphao, 0 );
+        }
         SDL_RenderCopy(rd,danphao,NULL ,&vitridan ) ;
+
         if(i == 8  )
         {
             vitridan.x -=15 ;
@@ -885,6 +914,7 @@ textture fsg ;
 textture fbm ;
 textture fcd ;
 textture fsp ;
+
 //matmau
 int x , y ; // vi tri chuot
 vector<sunglua* > SL ;
@@ -1600,6 +1630,30 @@ bool loadmedia()
         }
     }
     SDL_FreeSurface(sf) ;
+    nhacnen = Mix_LoadMUS("nhacnen.wav") ;
+    if(nhacnen == NULL)
+    {
+        cout << "ko load dc nhac nen" << endl ;
+        flag = false ;
+    }
+    tiengcao = Mix_LoadWAV("tiengcao.wav") ;
+    if(tiengcao == NULL)
+    {
+        cout << "ko co tieng cao" << endl ;
+        flag = false ;
+    }
+    tiengphao = Mix_LoadWAV("phaosound.wav") ;
+    if(tiengphao == NULL)
+    {
+        cout << "ko co tieng phao" << endl ;
+        flag = false ;
+    }
+    tienglua = Mix_LoadWAV("tienglua.wav") ;
+    if(tienglua == NULL)
+    {
+        cout << "ko co tieng lua" << endl ;
+        flag = false ;
+    }
     if(!map1.loadanh("mm.png"))
     {
         cout << "ko load dc map" << endl ;
@@ -1683,6 +1737,16 @@ void close()
 	danlua = NULL ;
 	MAINWD = NULL;
 	rd = NULL;
+    Mix_FreeChunk( tiengcao );
+	Mix_FreeChunk( tienglua );
+	Mix_FreeChunk( tiengphao );
+	tiengcao = NULL;
+	tienglua = NULL;
+	tiengphao = NULL;
+
+	//Free the music
+	Mix_FreeMusic( nhacnen );
+	nhacnen = NULL;
 	int sls = SL.size() ;
     int sgs =SG.size() ;
     int sps = SP.size() ;
@@ -1714,6 +1778,7 @@ void close()
     }
 	IMG_Quit();
 	SDL_Quit();
+	Mix_Quit();
 }
 // speed
 monster *r11 = new monster(1) ;
@@ -1948,7 +2013,7 @@ int main(int argc , char *args[])
             return 0 ;
         }
     }
-
+    Mix_PlayMusic( nhacnen, -1 );
     bool quit = false ;
     int demvang = 0 ;
     SDL_Event e ;
@@ -2207,8 +2272,11 @@ int main(int argc , char *args[])
             kyluc.freechu() ;
             hs.close() ;
         }
+
+
         SDL_RenderPresent(rd) ;
         demvang ++ ;
+
         resetrow() ;
     }
     close() ;
